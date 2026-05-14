@@ -28,8 +28,11 @@ const isOwner = wrapAsync(async (req, res, next) => {
 router.get(
   "/",
   wrapAsync(async (req, res) => {
-    const allListings = await Listing.find({}).populate("owner");
-    res.render("listings/index", { allListings });
+    const { category } = req.query;
+    let filter = {};
+    if (category) filter.category = category;
+    const allListings = await Listing.find(filter).populate("owner");
+    res.render("listings/index", { allListings, category: category || null });
   })
 );
 

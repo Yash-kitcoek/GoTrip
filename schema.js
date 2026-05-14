@@ -7,7 +7,8 @@ module.exports.listingSchema = Joi.object({
         location: Joi.string().required(),
         country: Joi.string().required(),
         price: Joi.number().required().min(0),
-        image : Joi.string().allow("", null)
+        image: Joi.string().allow("", null),
+        category: Joi.string().valid("Trending", "Rooms", "Iconic cities", "Mountains", "Castles", "Arctic", "Camping", "farms", "domes", "Boats").required(),
     }).required(),
 });
 
@@ -16,4 +17,4 @@ module.exports.reviewSchema = Joi.object({
         rating: Joi.number().required().min(1).max(5),
         comment: Joi.string().required(),
     }).required(),
-})
+});

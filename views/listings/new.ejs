@@ -4,7 +4,6 @@
     <div class="col-8 offset-2">
       <h3 class="mt-3 mb-2">Create a New Listing</h3>
 
-      <!-- ✅ Fixed action path -->
       <form action="/listings" method="POST" novalidate class="needs-validation" enctype="multipart/form-data">
         <div class="mb-3">
           <label for="title" class="form-label">Title</label>
@@ -42,8 +41,25 @@
           <div class="invalid-feedback">Location should be valid</div>
         </div>
 
+        <div class="mb-3">
+          <label for="category" class="form-label">Category</label>
+          <select name="listing[category]" class="form-select" required>
+            <option value="">-- Select a Category --</option>
+            <option value="Trending">Trending</option>
+            <option value="Rooms">Rooms</option>
+            <option value="Iconic cities">Iconic cities</option>
+            <option value="Mountains">Mountains</option>
+            <option value="Castles">Castles</option>
+            <option value="Arctic">Arctic</option>
+            <option value="Camping">Camping</option>
+            <option value="farms">farms</option>
+            <option value="domes">domes</option>
+            <option value="Boats">Boats</option>
+          </select>
+          <div class="invalid-feedback">Please select a category</div>
+        </div>
+
         <button class="btn btn-dark my-3 add-btn">Add</button>
       </form>
     </div>
   </div>
-
