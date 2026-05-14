@@ -108,6 +108,10 @@ app.get("/demouser", async (req, res, next) => {
 });
 
 // Routes
+// Routes
+app.get("/", (req, res) => {      // ← ADD THIS
+  res.redirect("/listings");       // ← ADD THIS
+});                                // ← ADD THIS
 app.use("/", userRouter);
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);

@@ -17,7 +17,8 @@ module.exports.validateListing = (req, res, next) => {
     const { error } = listingSchema.validate(req.body);
     if (error) {
         const msg = error.details.map(el => el.message).join(",");
-        throw new ExpressError(msg, 400);
+        // FIX #1: ExpressError(statusCode, message) — arguments were swapped
+        throw new ExpressError(400, msg);
     } else {
         next();
     }
@@ -31,14 +32,14 @@ module.exports.saveRedirectUrl = (req, res, next) => {
     next();
 };
 
-
-module.exports.isOwner = async (req, res, next) =>{
-     let { id } = req.params;
-      let listing = await listing.findById(id);
-      if(!listing.owner.equals(res.locals.currUser._id)) {
+module.exports.isOwner = async (req, res, next) => {
+    let { id } = req.params;
+    // FIX #2: was `listing.findById(id)` — lowercase `listing` is undefined here; must be `Listing` (the model)
+    let listing = await Listing.findById(id);
+    if (!listing.owner.equals(res.locals.currUser._id)) {
         req.flash("error", "You are not the owner of the listing");
-        return res.redirect('/listings/${id}');
-      }
-      next();
+        // FIX #3: was '/listings/${id}' (single quotes) — template literals require backticks
+        return res.redirect(`/listings/${id}`);
+    }
+    next();
 };
-
