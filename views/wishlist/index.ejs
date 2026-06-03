@@ -1,0 +1,62 @@
+<% layout("/layouts/boilerplate") %>
+
+<style>
+  .wishlist-header {
+    background: linear-gradient(135deg, #222 0%, #444 100%);
+    color: white;
+    padding: 2.5rem 2rem;
+    border-radius: 16px;
+    margin-bottom: 2rem;
+  }
+  .empty-state {
+    text-align: center;
+    padding: 5rem 1rem;
+    color: #888;
+  }
+  .empty-state i { font-size: 4rem; margin-bottom: 1rem; color: #ddd; }
+  .listing-link { text-decoration: none; color: inherit; }
+  .listing-card {
+    border-radius: 14px;
+    overflow: hidden;
+    border: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .listing-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+  }
+</style>
+
+<div class="wishlist-header">
+  <h2 class="mb-1"><i class="fa-solid fa-heart me-2"></i>My Wishlist</h2>
+  <p class="mb-0 opacity-75"><%= wishlist.length %> saved place<%= wishlist.length !== 1 ? 's' : '' %></p>
+</div>
+
+<% if (wishlist.length === 0) { %>
+  <div class="empty-state">
+    <i class="fa-regular fa-heart d-block"></i>
+    <h4>No saved listings yet</h4>
+    <p>Tap the ♡ heart on any listing to save it here.</p>
+    <a href="/listings" class="btn btn-dark mt-2">Explore Listings</a>
+  </div>
+<% } else { %>
+  <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3 g-4">
+    <% for (let listing of wishlist) { %>
+      <div class="col">
+        <a href="/listings/<%= listing._id %>" class="listing-link">
+          <div class="card listing-card">
+            <img src="<%= listing.image.url %>" class="card-img-top" alt="listing" style="height: 18rem; object-fit:cover;">
+            <div class="card-body">
+              <p class="card-text">
+                <b><%= listing.title %></b><br>
+                <small class="text-muted"><i class="fa-solid fa-location-dot me-1"></i><%= listing.location %>, <%= listing.country %></small><br>
+                <span class="fw-bold text-danger">₹<%= listing.price.toLocaleString("en-IN") %></span> <small class="text-muted">/ night</small>
+              </p>
+            </div>
+          </div>
+        </a>
+      </div>
+    <% } %>
+  </div>
+<% } %>
+

@@ -1,17 +1,93 @@
 <% layout("/layouts/boilerplate") %>
-<div class="row mt-3">
-    <h1 class="col-6 offset-3">Login</h1>
-    <div class="col-6 offset-3">
-        <form action="/login" method="POST" class="needs-validation" novalidate>
-            <div class="mb-3">
-                <label for="username" id="username" class="form-label">Username</label>
-                <input name="username"type="text" class="form-control" required>
-            </div>
-            <div class="mb-3">
-                <label for="password" id="password" class="form-label">Password</label>
-                <input name="password"type="password" class="form-control" required>
-            </div>
-            <button class="btn btn-success">login</button>
-        </form>
+
+<style>
+  .auth-wrapper {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .auth-card {
+    width: 100%;
+    max-width: 440px;
+    border: 1px solid #e5e7eb;
+    border-radius: 20px;
+    padding: 2.5rem 2rem;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+  }
+  .auth-logo { font-size: 2rem; color: #fe424d; }
+  .auth-title { font-size: 1.5rem; font-weight: 700; margin: 0.5rem 0 0.25rem; }
+  .auth-sub { color: #6b7280; font-size: 0.9rem; margin-bottom: 1.5rem; }
+  .form-control {
+    border-radius: 10px;
+    padding: 0.65rem 1rem;
+    border: 1.5px solid #e5e7eb;
+    font-size: 0.9rem;
+  }
+  .form-control:focus { border-color: #fe424d; box-shadow: 0 0 0 3px rgba(254,66,77,0.12); }
+  .form-label { font-weight: 600; font-size: 0.85rem; color: #374151; }
+  .btn-auth {
+    background: #fe424d;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 0.75rem;
+    width: 100%;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+    transition: background 0.2s;
+  }
+  .btn-auth:hover { background: #e0333e; color: white; }
+  .divider { text-align: center; color: #9ca3af; font-size: 0.85rem; margin: 1.25rem 0; position: relative; }
+  .divider::before, .divider::after {
+    content: ""; position: absolute; top: 50%; width: 42%; height: 1px; background: #e5e7eb;
+  }
+  .divider::before { left: 0; }
+  .divider::after { right: 0; }
+  .switch-link { text-align: center; font-size: 0.88rem; color: #6b7280; margin-top: 1.25rem; }
+  .switch-link a { color: #fe424d; font-weight: 600; text-decoration: none; }
+  .switch-link a:hover { text-decoration: underline; }
+  .input-icon-wrap { position: relative; }
+  .input-icon { position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); color: #9ca3af; font-size: 0.85rem; }
+  .input-icon-wrap .form-control { padding-left: 2.2rem; }
+  .forgot-link { font-size: 0.82rem; color: #9ca3af; float: right; margin-top: 0.3rem; }
+</style>
+
+<div class="auth-wrapper">
+  <div class="auth-card">
+    <div class="text-center">
+      <div class="auth-logo"><i class="fa-regular fa-compass"></i></div>
+      <div class="auth-title">Welcome back</div>
+      <div class="auth-sub">Log in to your GoTrip account</div>
     </div>
+
+    <form action="/login" method="POST" class="needs-validation" novalidate>
+
+      <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <div class="input-icon-wrap">
+          <i class="fa-solid fa-user input-icon"></i>
+          <input name="username" type="text" id="username" class="form-control" placeholder="Your username" required>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label for="password" class="form-label">Password</label>
+        <div class="input-icon-wrap">
+          <i class="fa-solid fa-lock input-icon"></i>
+          <input name="password" type="password" id="password" class="form-control" placeholder="Your password" required>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-auth">Log In</button>
+    </form>
+
+    <div class="divider">or</div>
+
+    <div class="switch-link">
+      Don't have an account? <a href="/signup">Sign up for free</a>
+    </div>
+  </div>
 </div>
+

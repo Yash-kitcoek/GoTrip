@@ -25,6 +25,28 @@ const isOwner = wrapAsync(async (req, res, next) => {
 });
 
 // ===== All Listings =====
+
+router.get(
+  "/search",
+  wrapAsync(async (req, res) => {
+    const { q } = req.query;
+    if (!q || q.trim() === "") return res.redirect("/listings");
+ 
+    const regex = new RegExp(q.trim(), "i");
+    const results = await Listing.find({
+      $or: [
+        { title: regex },
+        { location: regex },
+        { country: regex },
+        { description: regex },
+        { category: regex },
+      ],
+    }).populate("owner");
+ 
+    res.render("listings/search", { results, query: q });
+  })
+);
+
 router.get(
   "/",
   wrapAsync(async (req, res) => {

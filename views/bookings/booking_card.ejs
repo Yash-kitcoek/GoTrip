@@ -1,0 +1,58 @@
+<div class="booking-card">
+  <div class="d-flex">
+    <% if (booking.listing && booking.listing.image && booking.listing.image.url) { %>
+      <img src="<%= booking.listing.image.url %>" class="booking-img" alt="listing image">
+    <% } else { %>
+      <div class="booking-img bg-secondary d-flex align-items-center justify-content-center text-white">
+        <i class="fa-solid fa-image fa-2x"></i>
+      </div>
+    <% } %>
+
+    <div class="booking-body">
+      <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+        <div>
+          <h5 class="mb-1 fw-bold">
+            <% if (booking.listing) { %>
+              <a href="/listings/<%= booking.listing._id %>" class="text-dark text-decoration-none">
+                <%= booking.listing.title %>
+              </a>
+            <% } else { %>
+              Listing Unavailable
+            <% } %>
+          </h5>
+          <small class="text-muted">
+            <i class="fa-solid fa-location-dot me-1"></i>
+            <%= booking.listing ? `${booking.listing.location}, ${booking.listing.country}` : "—" %>
+          </small>
+        </div>
+        <span class="status-badge badge-<%= booking.status %>"><%= booking.status %></span>
+      </div>
+
+      <div class="booking-dates">
+        <div>
+          <div class="text-muted" style="font-size:0.75rem;">CHECK-IN</div>
+          <strong><%= new Date(booking.checkIn).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' }) %></strong>
+        </div>
+        <div>
+          <div class="text-muted" style="font-size:0.75rem;">CHECK-OUT</div>
+          <strong><%= new Date(booking.checkOut).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' }) %></strong>
+        </div>
+        <div>
+          <div class="text-muted" style="font-size:0.75rem;">GUESTS</div>
+          <strong><%= booking.guests %> guest<%= booking.guests > 1 ? 's' : '' %></strong>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center mt-2">
+        <span class="price-tag">₹<%= booking.totalPrice.toLocaleString('en-IN') %> <small class="text-muted fw-normal" style="font-size:0.8rem;">total</small></span>
+
+        <% if (booking.status !== 'cancelled' && new Date(booking.checkIn) > new Date()) { %>
+          <form action="/bookings/<%= booking._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Cancel this booking?')">
+            <button class="btn btn-sm btn-outline-danger">Cancel Booking</button>
+          </form>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+

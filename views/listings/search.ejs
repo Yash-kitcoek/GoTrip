@@ -1,0 +1,77 @@
+<% layout("/layouts/boilerplate") %>
+
+<style>
+  .search-results-header {
+    padding: 1.5rem 0 1rem;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 2rem;
+  }
+  .listing-link { text-decoration: none; color: inherit; }
+  .listing-card {
+    border-radius: 14px;
+    overflow: hidden;
+    border: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .listing-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+  }
+  .highlight {
+    background-color: #fff3cd;
+    padding: 0 2px;
+    border-radius: 3px;
+  }
+  .no-results {
+    text-align: center;
+    padding: 5rem 1rem;
+    color: #888;
+  }
+  .no-results i { font-size: 4rem; margin-bottom: 1rem; color: #ddd; }
+</style>
+
+<div class="search-results-header">
+  <h4>
+    <% if (results.length > 0) { %>
+      <span class="text-muted"><%= results.length %> result<%= results.length !== 1 ? 's' : '' %> for</span>
+      "<strong><%= query %></strong>"
+    <% } else { %>
+      No results for "<strong><%= query %></strong>"
+    <% } %>
+  </h4>
+  <a href="/listings" class="text-muted text-decoration-none" style="font-size:0.9rem;">
+    <i class="fa-solid fa-arrow-left me-1"></i>Back to all listings
+  </a>
+</div>
+
+<% if (results.length === 0) { %>
+  <div class="no-results">
+    <i class="fa-solid fa-magnifying-glass d-block"></i>
+    <h5>We couldn't find any listings matching "<%= query %>"</h5>
+    <p>Try a different city, country, or property type.</p>
+    <a href="/listings" class="btn btn-dark mt-2">Browse All Listings</a>
+  </div>
+<% } else { %>
+  <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 g-4">
+    <% for (let listing of results) { %>
+      <div class="col">
+        <a href="/listings/<%= listing._id %>" class="listing-link">
+          <div class="card listing-card">
+            <img src="<%= listing.image.url %>" class="card-img-top" alt="listing" style="height: 18rem; object-fit:cover;">
+            <div class="card-body">
+              <p class="card-text">
+                <b><%= listing.title %></b><br>
+                <small class="text-muted">
+                  <i class="fa-solid fa-location-dot me-1"></i><%= listing.location %>, <%= listing.country %>
+                </small><br>
+                <span class="fw-bold text-danger">₹<%= listing.price.toLocaleString("en-IN") %></span>
+                <small class="text-muted">/ night</small>
+              </p>
+            </div>
+          </div>
+        </a>
+      </div>
+    <% } %>
+  </div>
+<% } %>
+
