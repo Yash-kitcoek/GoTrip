@@ -51,5 +51,79 @@
     <div class="invalid-feedback">Location should be valid</div>
   </div>
 
+  <div class="mb-3">
+    <label class="form-label">Category</label>
+    <select name="listing[category]" class="form-select" required>
+      <% const categories = ["Trending", "Rooms", "Iconic cities", "Mountains", "Castles", "Arctic", "Camping", "farms", "domes", "Boats"]; %>
+      <% for (let item of categories) { %>
+        <option value="<%= item %>" <%= listing.category === item ? "selected" : "" %>><%= item %></option>
+      <% } %>
+    </select>
+  </div>
+
+  <div class="row">
+    <div class="mb-3 col-md-3">
+      <label class="form-label">Guests</label>
+      <input name="listing[maxGuests]" value="<%= listing.maxGuests || 2 %>" type="number" min="1" max="20" class="form-control" required>
+    </div>
+    <div class="mb-3 col-md-3">
+      <label class="form-label">Bedrooms</label>
+      <input name="listing[bedrooms]" value="<%= listing.bedrooms || 1 %>" type="number" min="0" max="20" class="form-control" required>
+    </div>
+    <div class="mb-3 col-md-3">
+      <label class="form-label">Beds</label>
+      <input name="listing[beds]" value="<%= listing.beds || 1 %>" type="number" min="1" max="30" class="form-control" required>
+    </div>
+    <div class="mb-3 col-md-3">
+      <label class="form-label">Bathrooms</label>
+      <input name="listing[bathrooms]" value="<%= listing.bathrooms || 1 %>" type="number" min="0" max="20" step="0.5" class="form-control" required>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Amenities</label>
+    <div class="amenity-grid">
+      <% const amenities = ["Wifi", "Kitchen", "Free parking", "Air conditioning", "Pool", "Workspace", "Pet friendly", "Washer"]; %>
+      <% for (let amenity of amenities) { %>
+        <label class="amenity-option">
+          <input type="checkbox" name="listing[amenities][]" value="<%= amenity %>" <%= listing.amenities && listing.amenities.includes(amenity) ? "checked" : "" %>>
+          <span><%= amenity %></span>
+        </label>
+      <% } %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="mb-3 col-md-6">
+      <label class="form-label">Check-in Time</label>
+      <input name="listing[checkInTime]" type="time" class="form-control" value="<%= listing.checkInTime || '14:00' %>">
+    </div>
+    <div class="mb-3 col-md-6">
+      <label class="form-label">Check-out Time</label>
+      <input name="listing[checkOutTime]" type="time" class="form-control" value="<%= listing.checkOutTime || '11:00' %>">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="mb-3 col-md-6">
+      <label class="form-label">Cleaning Fee</label>
+      <input name="listing[cleaningFee]" value="<%= listing.cleaningFee || 0 %>" type="number" min="0" class="form-control">
+    </div>
+    <div class="mb-3 col-md-6">
+      <label class="form-label">Service Fee</label>
+      <input name="listing[serviceFee]" value="<%= listing.serviceFee || 0 %>" type="number" min="0" class="form-control">
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">House Rules</label>
+    <textarea name="listing[houseRules]" class="form-control" rows="3"><%= listing.houseRules || "" %></textarea>
+  </div>
+
+  <div class="form-check form-switch mb-3">
+    <input class="form-check-input" type="checkbox" role="switch" id="instantBook" name="listing[instantBook]" <%= listing.instantBook ? "checked" : "" %>>
+    <label class="form-check-label" for="instantBook">Allow instant booking</label>
+  </div>
+
   <button class="btn btn-dark edit-btn mt-3">Edit</button>
 </form>

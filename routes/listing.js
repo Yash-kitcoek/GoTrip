@@ -9,6 +9,22 @@ const Listing = require("../models/listing");
 
 const { validateListing, isLoggedIn } = require("../middleware");
 
+const cleanListingData = (listing = {}) => {
+  const amenities = listing.amenities
+    ? Array.isArray(listing.amenities)
+      ? listing.amenities
+      : [listing.amenities]
+    : [];
+
+  return {
+    ...listing,
+    amenities: amenities.filter(Boolean),
+    instantBook: listing.instantBook === "on" || listing.instantBook === true,
+    cleaningFee: Number(listing.cleaningFee) || 0,
+    serviceFee: Number(listing.serviceFee) || 0,
+  };
+};
+
 // ===== Owner Middleware =====
 const isOwner = wrapAsync(async (req, res, next) => {
   const { id } = req.params;
@@ -29,11 +45,11 @@ const isOwner = wrapAsync(async (req, res, next) => {
 router.get(
   "/search",
   wrapAsync(async (req, res) => {
-    const { q } = req.query;
+    const { q, minPrice, maxPrice, guests, instantBook } = req.query;
     if (!q || q.trim() === "") return res.redirect("/listings");
  
     const regex = new RegExp(q.trim(), "i");
-    const results = await Listing.find({
+    const filters = {
       $or: [
         { title: regex },
         { location: regex },
@@ -41,20 +57,31 @@ router.get(
         { description: regex },
         { category: regex },
       ],
-    }).populate("owner");
+    };
+
+    if (minPrice) filters.price = { ...filters.price, $gte: Number(minPrice) };
+    if (maxPrice) filters.price = { ...filters.price, $lte: Number(maxPrice) };
+    if (guests) filters.maxGuests = { $gte: Number(guests) };
+    if (instantBook === "on") filters.instantBook = true;
+
+    const results = await Listing.find(filters).populate("owner");
  
-    res.render("listings/search", { results, query: q });
+    res.render("listings/search", { results, query: q, filters: req.query });
   })
 );
 
 router.get(
   "/",
   wrapAsync(async (req, res) => {
-    const { category } = req.query;
+    const { category, minPrice, maxPrice, guests, instantBook } = req.query;
     let filter = {};
     if (category) filter.category = category;
+    if (minPrice) filter.price = { ...filter.price, $gte: Number(minPrice) };
+    if (maxPrice) filter.price = { ...filter.price, $lte: Number(maxPrice) };
+    if (guests) filter.maxGuests = { $gte: Number(guests) };
+    if (instantBook === "on") filter.instantBook = true;
     const allListings = await Listing.find(filter).populate("owner");
-    res.render("listings/index", { allListings, category: category || null });
+    res.render("listings/index", { allListings, category: category || null, filters: req.query });
   })
 );
 
@@ -70,7 +97,7 @@ router.post(
   upload.single("listing[image]"),
   validateListing,
   wrapAsync(async (req, res) => {
-    const newListing = new Listing(req.body.listing);
+    const newListing = new Listing(cleanListingData(req.body.listing));
     newListing.owner = req.user._id;
 
     // Image upload
@@ -134,7 +161,7 @@ router.put(
 
     const listing = await Listing.findByIdAndUpdate(
       id,
-      { ...req.body.listing },
+      cleanListingData(req.body.listing),
       { new: true, runValidators: true }
     );
 

@@ -17,6 +17,7 @@ router.post(
     }
 
     const { checkIn, checkOut, guests } = req.body.booking;
+    const guestCount = Number(guests);
 
     const checkInDate = new Date(checkIn);
     const checkOutDate = new Date(checkOut);
@@ -28,6 +29,11 @@ router.post(
 
     if (checkInDate < new Date()) {
       req.flash("error", "Check-in date cannot be in the past.");
+      return res.redirect(`/listings/${listing._id}`);
+    }
+
+    if (guestCount > listing.maxGuests) {
+      req.flash("error", `This stay can host up to ${listing.maxGuests} guest(s).`);
       return res.redirect(`/listings/${listing._id}`);
     }
 
@@ -46,14 +52,17 @@ router.post(
     }
 
     const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
-    const totalPrice = nights * listing.price;
+    const subtotal = nights * listing.price;
+    const feeTotal = (listing.cleaningFee || 0) + (listing.serviceFee || 0);
+    const tax = Math.round((subtotal + feeTotal) * 0.18);
+    const totalPrice = subtotal + feeTotal + tax;
 
     const newBooking = new Booking({
       listing: listing._id,
       user: req.user._id,
       checkIn: checkInDate,
       checkOut: checkOutDate,
-      guests,
+      guests: guestCount,
       totalPrice,
     });
 

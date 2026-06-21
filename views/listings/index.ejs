@@ -1,42 +1,5 @@
 <% layout("/layouts/boilerplate") %>
 
-<style>
-    #filters {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-    }
-    .filter {
-        text-align: center;
-        margin-right: 2rem;
-        margin-top: 2rem;
-        opacity: 0.7;
-        cursor: pointer;
-    }
-    .filter:hover {
-        opacity: 1;
-    }
-    .filter p {
-        font-size: 0.8rem;
-    }
-    .active-filter {
-        opacity: 1;
-        border-bottom: 2px solid black;
-    }
-    .tax-info {
-        display: none;
-    }
-    .tax-toggle {
-        border: 1px solid black;
-        border-radius: 1rem;
-        height: 3.25rem;
-        padding: 1rem;
-        margin-left: 2rem;
-        display: flex;
-        align-items: center;
-    }
-</style>
-
 <div id="filters">
     <div class="filter <%= category === 'Trending' ? 'active-filter' : '' %>" onclick="location.href='/listings?category=Trending'">
        <div><i class="fa-solid fa-bed"></i></div>
@@ -79,13 +42,46 @@
        <p>Boats</p>
     </div>
 
-    <div class="tax-toggle">
+    <div class="tax-toggle ms-auto">
       <div class="form-check-reverse form-switch">
         <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault">
         <label class="form-check-label" for="switchCheckDefault">Display total after Taxes</label>
       </div>
     </div>
 </div>
+
+<form class="listing-filter-panel" action="/listings" method="GET">
+  <% if (category) { %>
+    <input type="hidden" name="category" value="<%= category %>">
+  <% } %>
+  <div>
+    <label>Min price</label>
+    <input type="number" name="minPrice" min="0" value="<%= filters.minPrice || '' %>" placeholder="1000">
+  </div>
+  <div>
+    <label>Max price</label>
+    <input type="number" name="maxPrice" min="0" value="<%= filters.maxPrice || '' %>" placeholder="8000">
+  </div>
+  <div>
+    <label>Guests</label>
+    <input type="number" name="guests" min="1" max="20" value="<%= filters.guests || '' %>" placeholder="2">
+  </div>
+  <label class="instant-filter">
+    <input type="checkbox" name="instantBook" <%= filters.instantBook ? "checked" : "" %>>
+    Instant book
+  </label>
+  <button class="btn btn-dark" type="submit">Apply</button>
+  <a href="/listings" class="btn btn-outline-secondary">Reset</a>
+</form>
+
+<% if (allListings.length === 0) { %>
+  <div class="empty-state">
+    <i class="fa-regular fa-compass"></i>
+    <h4>No stays match these filters</h4>
+    <p>Try widening the price range or guest count.</p>
+    <a href="/listings" class="btn btn-dark">Browse all stays</a>
+  </div>
+<% } %>
 
 <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
 <% for(let listing of allListings) { %>
@@ -96,7 +92,11 @@
             <div class="card-body">
                 <p class="card-text">
                 <b><%= listing.title %></b> <br>
-                &#8377; <%= listing.price.toLocaleString("en-IN") %> / night
+                <span class="listing-meta"><%= listing.location %> · <%= listing.maxGuests || 2 %> guests · <%= listing.bedrooms || 1 %> bedrooms</span><br>
+                <span class="listing-price">&#8377; <%= listing.price.toLocaleString("en-IN") %></span> / night
+                <% if (listing.instantBook) { %>
+                  <span class="instant-pill">Instant</span>
+                <% } %>
                 <i class="tax-info"> &nbsp; &nbsp;+18% GST</i>
             </p>
             </div>

@@ -122,6 +122,45 @@
     font-weight: 700; font-size: 1.1rem;
     flex-shrink: 0;
   }
+  .detail-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin: 1.25rem 0;
+  }
+  .detail-stat {
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 0.9rem;
+    background: #fff;
+  }
+  .detail-stat i { color: #fe424d; margin-bottom: 0.35rem; }
+  .amenities-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+  .amenity-row {
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 0.75rem 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .amenity-row i { color: #222; width: 18px; }
+  .rule-box {
+    background: #fafafa;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 1rem;
+  }
+  @media (max-width: 768px) {
+    .detail-stats,
+    .amenities-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
 </style>
 
 <div class="row mt-3 g-4">
@@ -166,8 +205,58 @@
       <% } %>
     </div>
 
+    <div class="detail-stats">
+      <div class="detail-stat">
+        <i class="fa-solid fa-user-group"></i>
+        <div class="fw-semibold"><%= listing.maxGuests || 2 %> guests</div>
+      </div>
+      <div class="detail-stat">
+        <i class="fa-solid fa-door-open"></i>
+        <div class="fw-semibold"><%= listing.bedrooms || 1 %> bedrooms</div>
+      </div>
+      <div class="detail-stat">
+        <i class="fa-solid fa-bed"></i>
+        <div class="fw-semibold"><%= listing.beds || 1 %> beds</div>
+      </div>
+      <div class="detail-stat">
+        <i class="fa-solid fa-bath"></i>
+        <div class="fw-semibold"><%= listing.bathrooms || 1 %> baths</div>
+      </div>
+    </div>
+
     <h5 class="fw-bold mb-2">About this place</h5>
     <p class="text-muted"><%= listing.description %></p>
+
+    <hr>
+
+    <h5 class="fw-bold mb-3">What this place offers</h5>
+    <% if (listing.amenities && listing.amenities.length > 0) { %>
+      <div class="amenities-list">
+        <% const amenityIcons = { "Wifi": "fa-wifi", "Kitchen": "fa-kitchen-set", "Free parking": "fa-square-parking", "Air conditioning": "fa-snowflake", "Pool": "fa-water-ladder", "Workspace": "fa-laptop", "Pet friendly": "fa-paw", "Washer": "fa-shirt" }; %>
+        <% for (let amenity of listing.amenities) { %>
+          <div class="amenity-row">
+            <i class="fa-solid <%= amenityIcons[amenity] || 'fa-circle-check' %>"></i>
+            <span><%= amenity %></span>
+          </div>
+        <% } %>
+      </div>
+    <% } else { %>
+      <p class="text-muted">Amenities have not been added yet.</p>
+    <% } %>
+
+    <hr>
+
+    <h5 class="fw-bold mb-3">House rules</h5>
+    <div class="rule-box">
+      <div class="d-flex flex-wrap gap-3 mb-2">
+        <span><i class="fa-regular fa-clock me-1"></i> Check-in after <%= listing.checkInTime || "14:00" %></span>
+        <span><i class="fa-regular fa-clock me-1"></i> Check-out before <%= listing.checkOutTime || "11:00" %></span>
+        <% if (listing.instantBook) { %>
+          <span><i class="fa-solid fa-bolt me-1"></i> Instant booking available</span>
+        <% } %>
+      </div>
+      <p class="mb-0 text-muted"><%= listing.houseRules || "Please respect the space and keep it tidy." %></p>
+    </div>
 
     <hr>
 
@@ -229,7 +318,7 @@
   <div class="col-lg-4 offset-lg-1">
     <div class="booking-panel">
       <div class="price-main mb-3">
-        ₹<%= listing.price.toLocaleString("en-IN") %> <small>/ night</small>
+        &#8377;<%= listing.price.toLocaleString("en-IN") %> <small>/ night</small>
       </div>
 
       <% if (currUser) { %>
@@ -246,21 +335,33 @@
           </div>
           <div class="guests-input">
             <label>Guests</label>
-            <input type="number" name="booking[guests]" min="1" max="20" value="1" style="border:none;outline:none;width:100%;background:transparent;">
+            <input type="number" name="booking[guests]" min="1" max="<%= listing.maxGuests || 20 %>" value="1" style="border:none;outline:none;width:100%;background:transparent;">
           </div>
 
           <div class="price-breakdown" id="priceBreakdown" style="display:none;">
             <div class="d-flex justify-content-between">
-              <span id="nightsLabel">₹<%= listing.price.toLocaleString("en-IN") %> × <span id="nightsCount">0</span> nights</span>
-              <span id="subTotal">—</span>
+              <span id="nightsLabel">&#8377;<%= listing.price.toLocaleString("en-IN") %> x <span id="nightsCount">0</span> nights</span>
+              <span id="subTotal">-</span>
             </div>
+            <% if (listing.cleaningFee) { %>
+              <div class="d-flex justify-content-between mt-1">
+                <span>Cleaning fee</span>
+                <span>&#8377;<%= listing.cleaningFee.toLocaleString("en-IN") %></span>
+              </div>
+            <% } %>
+            <% if (listing.serviceFee) { %>
+              <div class="d-flex justify-content-between mt-1">
+                <span>Service fee</span>
+                <span>&#8377;<%= listing.serviceFee.toLocaleString("en-IN") %></span>
+              </div>
+            <% } %>
             <div class="d-flex justify-content-between mt-1">
               <span>GST (18%)</span>
-              <span id="gstAmount">—</span>
+              <span id="gstAmount">-</span>
             </div>
             <div class="d-flex justify-content-between fw-bold mt-2 pt-2 border-top">
               <span>Total</span>
-              <span id="grandTotal">—</span>
+              <span id="grandTotal">-</span>
             </div>
           </div>
 
@@ -277,6 +378,8 @@
 
 <script>
   const pricePerNight = parseInt("<%= listing.price %>") || 0;
+  const cleaningFee = parseInt("<%= listing.cleaningFee || 0 %>") || 0;
+  const serviceFee = parseInt("<%= listing.serviceFee || 0 %>") || 0;
 
   const checkInInput = document.getElementById("checkIn");
   const checkOutInput = document.getElementById("checkOut");
@@ -295,13 +398,14 @@
     if (nights <= 0) return;
 
     const subtotal = pricePerNight * nights;
-    const gst = Math.round(subtotal * 0.18);
-    const total = subtotal + gst;
+    const feeTotal = cleaningFee + serviceFee;
+    const gst = Math.round((subtotal + feeTotal) * 0.18);
+    const total = subtotal + feeTotal + gst;
 
     document.getElementById("nightsCount").textContent = nights;
-    document.getElementById("subTotal").textContent = "₹" + subtotal.toLocaleString("en-IN");
-    document.getElementById("gstAmount").textContent = "₹" + gst.toLocaleString("en-IN");
-    document.getElementById("grandTotal").textContent = "₹" + total.toLocaleString("en-IN");
+    document.getElementById("subTotal").textContent = "Rs. " + subtotal.toLocaleString("en-IN");
+    document.getElementById("gstAmount").textContent = "Rs. " + gst.toLocaleString("en-IN");
+    document.getElementById("grandTotal").textContent = "Rs. " + total.toLocaleString("en-IN");
     document.getElementById("priceBreakdown").style.display = "block";
   }
 

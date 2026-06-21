@@ -59,6 +59,70 @@
           <div class="invalid-feedback">Please select a category</div>
         </div>
 
+        <div class="row">
+          <div class="mb-3 col-md-3">
+            <label class="form-label">Guests</label>
+            <input name="listing[maxGuests]" type="number" min="1" max="20" value="2" class="form-control" required>
+          </div>
+          <div class="mb-3 col-md-3">
+            <label class="form-label">Bedrooms</label>
+            <input name="listing[bedrooms]" type="number" min="0" max="20" value="1" class="form-control" required>
+          </div>
+          <div class="mb-3 col-md-3">
+            <label class="form-label">Beds</label>
+            <input name="listing[beds]" type="number" min="1" max="30" value="1" class="form-control" required>
+          </div>
+          <div class="mb-3 col-md-3">
+            <label class="form-label">Bathrooms</label>
+            <input name="listing[bathrooms]" type="number" min="0" max="20" step="0.5" value="1" class="form-control" required>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Amenities</label>
+          <div class="amenity-grid">
+            <% const amenities = ["Wifi", "Kitchen", "Free parking", "Air conditioning", "Pool", "Workspace", "Pet friendly", "Washer"]; %>
+            <% for (let amenity of amenities) { %>
+              <label class="amenity-option">
+                <input type="checkbox" name="listing[amenities][]" value="<%= amenity %>">
+                <span><%= amenity %></span>
+              </label>
+            <% } %>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="mb-3 col-md-6">
+            <label class="form-label">Check-in Time</label>
+            <input name="listing[checkInTime]" type="time" class="form-control" value="14:00">
+          </div>
+          <div class="mb-3 col-md-6">
+            <label class="form-label">Check-out Time</label>
+            <input name="listing[checkOutTime]" type="time" class="form-control" value="11:00">
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="mb-3 col-md-6">
+            <label class="form-label">Cleaning Fee</label>
+            <input name="listing[cleaningFee]" type="number" min="0" value="0" class="form-control">
+          </div>
+          <div class="mb-3 col-md-6">
+            <label class="form-label">Service Fee</label>
+            <input name="listing[serviceFee]" type="number" min="0" value="0" class="form-control">
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">House Rules</label>
+          <textarea name="listing[houseRules]" class="form-control" rows="3" placeholder="Quiet hours, pets, smoking, parties..."></textarea>
+        </div>
+
+        <div class="form-check form-switch mb-3">
+          <input class="form-check-input" type="checkbox" role="switch" id="instantBook" name="listing[instantBook]">
+          <label class="form-check-label" for="instantBook">Allow instant booking</label>
+        </div>
+
         <button class="btn btn-dark my-3 add-btn">Add</button>
       </form>
     </div>
