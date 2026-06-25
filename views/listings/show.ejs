@@ -121,6 +121,22 @@
     display: flex; align-items: center; justify-content: center;
     font-weight: 700; font-size: 1.1rem;
     flex-shrink: 0;
+    object-fit: cover;
+  }
+  .host-card {
+    border: 1px solid #eee;
+    border-radius: 14px;
+    padding: 1rem;
+    background: #fff;
+    margin: 1rem 0 1.25rem;
+  }
+  .host-card .owner-avatar {
+    width: 56px;
+    height: 56px;
+  }
+  .host-meta {
+    color: #717171;
+    font-size: 0.9rem;
   }
   .detail-stats {
     display: grid;
@@ -190,7 +206,11 @@
     <img src="<%= listing.image.url %>" class="show-img mb-3" alt="listing image">
 
     <div class="owner-badge">
-      <div class="owner-avatar"><%= listing.owner ? listing.owner.username[0].toUpperCase() : '?' %></div>
+      <% if (listing.owner && listing.owner.avatar && listing.owner.avatar.url) { %>
+        <img src="<%= listing.owner.avatar.url %>" class="owner-avatar" alt="<%= listing.owner.username %>">
+      <% } else { %>
+        <div class="owner-avatar"><%= listing.owner ? listing.owner.username[0].toUpperCase() : '?' %></div>
+      <% } %>
       <div>
         <div style="font-size:0.8rem; color:#888;">Hosted by</div>
         <strong><%= listing.owner ? listing.owner.username : 'Unknown' %></strong>
@@ -204,6 +224,35 @@
         </div>
       <% } %>
     </div>
+
+    <% if (listing.owner) { %>
+      <div class="host-card">
+        <div class="d-flex gap-3 align-items-start">
+          <% if (listing.owner.avatar && listing.owner.avatar.url) { %>
+            <img src="<%= listing.owner.avatar.url %>" class="owner-avatar" alt="<%= listing.owner.username %>">
+          <% } else { %>
+            <div class="owner-avatar"><%= listing.owner.username[0].toUpperCase() %></div>
+          <% } %>
+          <div>
+            <h6 class="fw-bold mb-1"><%= listing.owner.username %></h6>
+            <div class="host-meta mb-2">
+              <% if (listing.owner.hostingSince) { %>
+                Hosting since <%= listing.owner.hostingSince %>
+              <% } %>
+              <% if (listing.owner.location) { %>
+                <%= listing.owner.hostingSince ? " · " : "" %><%= listing.owner.location %>
+              <% } %>
+            </div>
+            <% if (listing.owner.bio) { %>
+              <p class="mb-2 text-muted"><%= listing.owner.bio %></p>
+            <% } %>
+            <% if (listing.owner.languages && listing.owner.languages.length > 0) { %>
+              <div class="host-meta">Speaks <%= listing.owner.languages.join(", ") %></div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    <% } %>
 
     <div class="detail-stats">
       <div class="detail-stat">

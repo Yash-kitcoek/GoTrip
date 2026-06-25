@@ -2,12 +2,13 @@
   "name": "tripnest",
   "version": "1.0.0",
   "description": "",
-  "main": "init/index.js",
+  "main": "app.js",
   "engines": {
     "node": "22.18.0"
   },
   "scripts": {
-    "start": "node init/index.js"
+    "start": "node app.js",
+    "seed": "node seeds/index.js"
   },
   "keywords": [],
   "author": "",

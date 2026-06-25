@@ -92,7 +92,7 @@
             <div class="card-body">
                 <p class="card-text">
                 <b><%= listing.title %></b> <br>
-                <span class="listing-meta"><%= listing.location %> · <%= listing.maxGuests || 2 %> guests · <%= listing.bedrooms || 1 %> bedrooms</span><br>
+                <span class="listing-meta"><%= listing.location %> &middot; <%= listing.maxGuests || 2 %> guests &middot; <%= listing.bedrooms || 1 %> bedrooms</span><br>
                 <span class="listing-price">&#8377; <%= listing.price.toLocaleString("en-IN") %></span> / night
                 <% if (listing.instantBook) { %>
                   <span class="instant-pill">Instant</span>

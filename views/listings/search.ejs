@@ -64,8 +64,12 @@
                 <small class="text-muted">
                   <i class="fa-solid fa-location-dot me-1"></i><%= listing.location %>, <%= listing.country %>
                 </small><br>
-                <span class="fw-bold text-danger">₹<%= listing.price.toLocaleString("en-IN") %></span>
+                <span class="listing-meta"><%= listing.maxGuests || 2 %> guests · <%= listing.bedrooms || 1 %> bedrooms</span><br>
+                <span class="fw-bold text-danger">&#8377;<%= listing.price.toLocaleString("en-IN") %></span>
                 <small class="text-muted">/ night</small>
+                <% if (listing.instantBook) { %>
+                  <span class="instant-pill">Instant</span>
+                <% } %>
               </p>
             </div>
           </div>

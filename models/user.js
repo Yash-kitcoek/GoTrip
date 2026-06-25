@@ -8,6 +8,25 @@ const userSchema = new Schema({
         required: true,
         unique: true,
     },
+    bio: {
+        type: String,
+        default: "",
+    },
+    avatar: {
+        url: String,
+        filename: String,
+    },
+    location: {
+        type: String,
+        default: "",
+    },
+    hostingSince: {
+        type: Number,
+    },
+    languages: {
+        type: [String],
+        default: [],
+    },
     wishlist: [
         {
             type: Schema.Types.ObjectId,
