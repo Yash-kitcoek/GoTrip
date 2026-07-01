@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "engines": {
-    "node": "22.18.0"
+    "node": "22.x"
   },
   "scripts": {
     "start": "node app.js",

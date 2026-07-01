@@ -25,7 +25,15 @@ const bookingRouter  = require("./routes/booking.js");
 const wishlistRouter = require("./routes/wishlist.js");
 
 // ── Database ──────────────────────────────────────────────────
-const dburl = process.env.ATLASDB_URL;
+const dburl = process.env.ATLASDB_URL || process.env.MONGO_URL;
+
+if (!dburl) {
+  throw new Error("Missing MongoDB connection string. Set ATLASDB_URL or MONGO_URL in Vercel Environment Variables.");
+}
+
+if (!process.env.SECRET) {
+  throw new Error("Missing session secret. Set SECRET in Vercel Environment Variables.");
+}
 
 mongoose
   .connect(dburl)
