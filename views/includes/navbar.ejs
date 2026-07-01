@@ -67,7 +67,8 @@
 
       <!-- Right: Auth -->
       <ul class="navbar-nav ms-2 d-flex flex-row align-items-center gap-2">
-        <% if (!currUser) { %>
+        <% const currentUser = typeof currUser !== "undefined" ? currUser : null; %>
+        <% if (!currentUser) { %>
           <li class="nav-item">
             <a class="nav-link" href="/listings/new" style="white-space:nowrap; font-size:0.85rem;">Airbnb your home</a>
           </li>
@@ -92,7 +93,7 @@
             </a>
           </li>
           <li class="nav-item welcome-text d-none d-lg-block">
-            Hi, <strong><%= currUser.username %></strong>
+            Hi, <strong><%= currentUser.username %></strong>
           </li>
           <li class="nav-item">
             <a href="/logout" class="nav-auth-btn">Log out</a>
